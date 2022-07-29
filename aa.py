@@ -45,9 +45,15 @@ class scraper:
         weight=tag_product_weight.find_element(by=By.XPATH,value='.//span[@class="bop-catchWeight"]').text
         return weight
     def get_product_price(self):
-        get_prduct_price=self.driver.find_element(by=By.XPATH,value='//h2[@class="bop-price__current " ]').text
-        return get_prduct_price
+        prduct_price=self.driver.find_element(by=By.XPATH,value='//h2[@class="bop-price__current " ]').text
+        return prduct_price
+
+
+    def get_product_description(self):
+        product_description=self.driver.find_element(by=By.XPATH,BALUE='//div[@class="bop-info__content"]').text
+        return product_description
     
+
 
 
 
