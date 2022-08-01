@@ -1,0 +1,2 @@
+print('cute_boy')
+
