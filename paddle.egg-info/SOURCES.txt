@@ -1,0 +1,7 @@
+README.md
+setup.py
+paddle.egg-info/PKG-INFO
+paddle.egg-info/SOURCES.txt
+paddle.egg-info/dependency_links.txt
+paddle.egg-info/requires.txt
+paddle.egg-info/top_level.txt

@@ -13,6 +13,7 @@ driver=Chrome(ChromeDriverManager().install())
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+import uuid
 
 
 
@@ -50,20 +51,30 @@ class scraper:
 
 
     def get_product_description(self):
-        product_description=self.driver.find_element(by=By.XPATH,BALUE='//div[@class="bop-info__content"]').text
+        product_description=self.driver.find_element(by=By.XPATH,value='//div[@class="bop-info__content"]').text
         return product_description
+
+    def get_uuid(self):
+        '''Generates a random Universally Unique ID (UUID) for each property and appends to the dictionary
+        '''
+        uni_uid = str(uuid.uuid4())
+        return uni_uid
     
-
-
-
-
-
-
-
-
+    def get_img_link(self):
+        img_tag=self.driver.find_element(by=By.XPATH,value='//img[@role="presentation"]')
+        img_tag=img_tag.get_attribute('src')
+        return img_tag
     
-product_list=product_container.find_elements(by=By.XPATH,value='./li')
-num_list=len(product_list)
+    def get_in_dictionary()
+    
+ 
+        
+
+
+
+
+
+
 
 
 

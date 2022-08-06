@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 from multiprocessing.sharedctypes import Value
+
 from selenium import webdriver
 import uuid
 from selenium.webdriver.support.ui import WebDriverWait
@@ -45,3 +46,4 @@ a=driver.find_element(by=By.CLASS_NAME,value='bop-price__per"]').text
 #b=a.find_element(by=By.XPATH,value='./meta[@itemprop="priceCurrency"]').text
 driver.close()
 print(a)
+
