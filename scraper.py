@@ -6,12 +6,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
-
+import time
 class Scraper:
-    def __init__(self,url):
-        self.driver=webdriver.Chrome(ChromeDriverManager().install())
-        self.driver.get(url)
-    def get_driver(self):
+    def __init__(self,url:str='https://www.ocado.com/'):
         self.driver=webdriver.Chrome(ChromeDriverManager().install())
         self.driver.get(url)
     def accept_cookies(self, xpath:str='//div[@class="banner-actions-container"]'):
@@ -28,13 +25,54 @@ class Scraper:
         self.driver.implicitly_wait(1)
         search_bar.send_keys(product_category)
         search_bar.send_keys(Keys.ENTER)
+        self.driver.implicitly_wait(1)
     def find_product(self,
                     container:str='//ul[@class="fops fops-regular fops-shelf"]',
-                    tag:str='./li') -> list:
+                    tag:str='./li') :
+        self.driver.implicitly_wait(1)
         container=self.driver.find_element(By.XPATH,value=container)
         products=container.find_elements(By.XPATH,value=tag)
-        print(products)
+        time.sleep(1)
         return products
+    def find_all_products(self):
+        self.accept_cookies()
+        self.driver.implicitly_wait(1)
+        self.browse_button()
+        self.driver.implicitly_wait(1)
+        self.search_bar()
+        self.driver.implicitly_wait(1)
+        food_products=self.find_product()
+        return food_products
+    
+
+
+# class PaddleScraper (Scraper):
+
+    # def find_all_products(self):
+    #     self.accept_cookies()
+    #     time.sleep(1)
+    #     self.browse_button()
+    #     time.sleep(1)
+    #     self.search_bar()
+    #     time.sleep(1)
+    #     food_products=self.find_product()
+    #     # links=[]
+    #     # a=food_products[0].find_element(By.XPATH,value='//a').get_attribute('href')
+    #     # links.append(a)
+    #     return food_products
+    #     # for product in food_products:
+    #     #     link=product.find_element(By.XPATH,value='//a').get_attribute('href')
+    #     #     links.append(link)
+    #     # return links
+        
+
+
+
+
+
+        
+
+    
 
 
 
