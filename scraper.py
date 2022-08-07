@@ -11,6 +11,9 @@ class Scraper:
     def __init__(self,url):
         self.driver=webdriver.Chrome(ChromeDriverManager().install())
         self.driver.get(url)
+    def get_driver(self):
+        self.driver=webdriver.Chrome(ChromeDriverManager().install())
+        self.driver.get(url)
     def accept_cookies(self, xpath:str='//div[@class="banner-actions-container"]'):
         accept_cookies=self.driver.find_element(By.XPATH,value=xpath)
         accept_cookies.click()
@@ -27,12 +30,11 @@ class Scraper:
         search_bar.send_keys(Keys.ENTER)
     def find_product(self,
                     container:str='//ul[@class="fops fops-regular fops-shelf"]',
-                    tag:str='./li'):
+                    tag:str='./li') -> list:
         container=self.driver.find_element(By.XPATH,value=container)
         products=container.find_elements(By.XPATH,value=tag)
-
+        print(products)
         return products
-
 
 
 

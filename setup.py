@@ -1,4 +1,3 @@
-from gettext import install
 from setuptools import setup,find_packages
 setup(name='paddle',
         version='1.0',

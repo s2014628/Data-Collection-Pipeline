@@ -1,6 +1,3 @@
 
 
 
-
-print(cute_boy)
-
