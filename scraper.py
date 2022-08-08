@@ -42,7 +42,7 @@ class Scraper:
         self.search_bar()
         self.driver.implicitly_wait(1)
         food_products=self.find_product()
-        
+        un
         # food_products[0].click()
         # links=[]
         # for food_product in food_products:
