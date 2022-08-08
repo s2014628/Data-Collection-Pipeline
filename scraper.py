@@ -27,7 +27,7 @@ class Scraper:
         search_bar.send_keys(Keys.ENTER)
         self.driver.implicitly_wait(1)
     def find_product(self,
-                    container:str='//ul[@class="fops fops-regular fops-shelf"]',
+                    container:str='//*[@id="main-content"]/div[2]/div[3]/ul',
                     tag:str='./li') :
         self.driver.implicitly_wait(1)
         container=self.driver.find_element(By.XPATH,value=container)
@@ -42,7 +42,14 @@ class Scraper:
         self.search_bar()
         self.driver.implicitly_wait(1)
         food_products=self.find_product()
-        return food_products
+        
+        # food_products[0].click()
+        # links=[]
+        # for food_product in food_products:
+        #     link=food_product.find_element(By.XPATH,value='//a').get_attribute('href')
+        #     links.append(link)
+        return food_products#
+    
     
 
 
