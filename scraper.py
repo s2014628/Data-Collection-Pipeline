@@ -51,39 +51,61 @@ class Scraper:
         self.driver.implicitly_wait(1)
         self.search_bar()
         self.driver.implicitly_wait(1)
-        # container=self.driver.find_element(By.XPATH,value=container)
-        # products=container.find_elements(By.XPATH,value=tag)
         time.sleep(1)
         links=[]
-        # a=products[10].find_element(By.XPATH,value='//div[@class="fop-contentWrapper"]/a').get_attribute('href')
-    # Scroll down to bottom
-        # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-
-        self.driver.execute_script("window.scrollTo(0,2000)")
-        self.driver.implicitly_wait(2)
-        self.driver.execute_script("window.scrollTo(0,2000)")
-        self.driver.implicitly_wait(2)
-        self.driver.execute_script("window.scrollTo(0,2000)")
-        self.driver.implicitly_wait(2)
-        self.driver.execute_script("window.scrollTo(0,2000)")
-        self.driver.implicitly_wait(2)
-        self.driver.execute_script("window.scrollTo(0,6000)")
+        self.driver.execute_script("window.scrollTo(0,1500)")
         time.sleep(1)
-        a=self.driver.find_elements(By.XPATH,
+        self.driver.execute_script("window.scrollTo(1500,3000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(3000,3500)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(3500,4000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(4000,4500)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(4500,6000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(6000,7500)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(7500,9000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(7500,9000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(9000,10500)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(10500,12000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(12000,13500)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(13500,15000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(15000,16500)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(16500,18000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(18000,19500)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(19500,21000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(21000,22500)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(22500,25000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(25000,26500)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(26500,28000)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(28000,29500)")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(29500,31000)")
+        time.sleep(1)  
+        link_containers=self.driver.find_elements(By.XPATH,
                                  value="//*[@id='main-content']/div[2]/div[3]/ul//li//div[@class='fop-contentWrapper']/a")
-        # count=0
-        # for b in a:
-        #     link=b.get_attribute('href')
-        #     links.append(link)
-        # find_all_div_under_li_class=products[0].find_element(By.XPATH,
-                # value='/div[@class="fop-contentWrapper"]/a').get_attribute('href')
-            #  find_url_tag=find_all_div_under_li_class[1].find_element(By.XPATH,
-            #                      value='.//div[@class="fop-contentWrapper"]')
-            # link=find_url_tag.find_element(By.XPATH,value='.//a').get_attribute('href')
-        # count+=1
-        # links.append(find_all_div_under_li_class)
-        return a
+
+        for link_container in link_containers:
+            link=link_container.get_attribute('href')
+            links.append(link)
+        return links
 
         
   
