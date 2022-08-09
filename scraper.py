@@ -1,3 +1,4 @@
+from itertools import count, product
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -10,15 +11,26 @@ import time
 import uuid
 from uuid import uuid4
 class Scraper:
+
+
     def __init__(self,url:str='https://www.ocado.com/'):
         self.driver=webdriver.Chrome(ChromeDriverManager().install())
         self.driver.get(url)
+
+
+
     def accept_cookies(self, xpath:str='//div[@class="banner-actions-container"]'):
         accept_cookies=self.driver.find_element(By.XPATH,value=xpath)
         accept_cookies.click()
+
+
+
     def browse_button(self,xpath:str='//*[@id="browseShopContainer"]/div/a/span'):
         browse_button=self.driver.find_element(By.XPATH,value=xpath)
         browse_button.click()
+
+
+
     def search_bar(self,
                     xpath:str='//input[@id="search"]',
                     product_category:str='meat'):
@@ -28,27 +40,53 @@ class Scraper:
         search_bar.send_keys(product_category)
         search_bar.send_keys(Keys.ENTER)
         self.driver.implicitly_wait(1)
-    def find_product(self,
-                    container:str='//*[@id="main-content"]/div[2]/div[3]/ul',
-                    tag:str='./li') :
+
+
+
+
+    def find_product(self):
         self.accept_cookies()
         self.driver.implicitly_wait(1)
         self.browse_button()
         self.driver.implicitly_wait(1)
         self.search_bar()
         self.driver.implicitly_wait(1)
-        container=self.driver.find_element(By.XPATH,value=container)
-        products=container.find_elements(By.XPATH,value=tag)
+        # container=self.driver.find_element(By.XPATH,value=container)
+        # products=container.find_elements(By.XPATH,value=tag)
         time.sleep(1)
         links=[]
-        for product in products:
-            find_all_div_under_li_class=product.find_elements(By.XPATH,value='./div')
-            find_url_tag=find_all_div_under_li_class[1].find_element(By.XPATH,
-                                                            value='//div[@class="fop-contentWrapper"]')
-            link=find_url_tag.find_element(By.XPATH,value='//a').get_attribute('href')
-            links.append(link)
-        print(links)
+        # a=products[10].find_element(By.XPATH,value='//div[@class="fop-contentWrapper"]/a').get_attribute('href')
+    # Scroll down to bottom
+        # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
+
+        self.driver.execute_script("window.scrollTo(0,2000)")
+        self.driver.implicitly_wait(2)
+        self.driver.execute_script("window.scrollTo(0,2000)")
+        self.driver.implicitly_wait(2)
+        self.driver.execute_script("window.scrollTo(0,2000)")
+        self.driver.implicitly_wait(2)
+        self.driver.execute_script("window.scrollTo(0,2000)")
+        self.driver.implicitly_wait(2)
+        self.driver.execute_script("window.scrollTo(0,6000)")
+        time.sleep(1)
+        a=self.driver.find_elements(By.XPATH,
+                                 value="//*[@id='main-content']/div[2]/div[3]/ul//li//div[@class='fop-contentWrapper']/a")
+        # count=0
+        # for b in a:
+        #     link=b.get_attribute('href')
+        #     links.append(link)
+        # find_all_div_under_li_class=products[0].find_element(By.XPATH,
+                # value='/div[@class="fop-contentWrapper"]/a').get_attribute('href')
+            #  find_url_tag=find_all_div_under_li_class[1].find_element(By.XPATH,
+            #                      value='.//div[@class="fop-contentWrapper"]')
+            # link=find_url_tag.find_element(By.XPATH,value='.//a').get_attribute('href')
+        # count+=1
+        # links.append(find_all_div_under_li_class)
+        return a
+
+        
+  
 
 
 
