@@ -31,6 +31,7 @@ class Scraper:
 
 
 
+
     def search_bar(self,
                     xpath:str='//input[@id="search"]',
                     product_category:str='meat'):
@@ -40,11 +41,18 @@ class Scraper:
         search_bar.send_keys(product_category)
         search_bar.send_keys(Keys.ENTER)
         self.driver.implicitly_wait(1)
+        # filter_button=self.driver.find_element(By.XPATH,
+        #                                 value='//*[@id="main-content"]/div[2]/div[3]/div[1]/div[3]/div[1]/form/span/select')
+        # filter_button.click()
+        # self.driver.implicitly_wait(1)
+        # rating_button=self.driver.find_element(By.XPATH,
+        #                         value='//*[@id="main-content"]/div[2]/div[3]/div[1]/div[3]/div[1]/form/span/select/option[9]')
+        # rating_button.click()
 
 
 
 
-    def find_product(self):
+    def find_links(self):
         self.accept_cookies()
         self.driver.implicitly_wait(1)
         self.browse_button()
@@ -107,8 +115,120 @@ class Scraper:
             links.append(link)
         return links
 
+
+
+
+
+    def get_info(self):
+        links=self.find_links()
+        unique_ids=[]
+        uuids=[]
+        names=[]
+        prices=[]
+        # exps=[]
+        # exps_descirptions=[]
+        # descriptions=[]
+        # countries_of_orgin=[]
+        rating_scores=[]
+        five_stars_ratings=[]
+        four_stars_ratings=[]
+        three_stars_ratings=[]
+        two_stars_ratings=[]
+        one_star_ratings=[]
+        recommendation_rates=[]
+        for link in links:
+            if link=='https://www.ocado.com/products/m-s-smokin-southern-fried-chicken-tenders-587598011'or link=='https://www.ocado.com/products/m-s-crackin-classic-chicken-tenders-587592011' or link=='https://www.ocado.com/products/gilberts-chicken-hot-dog-575079011':
+                continue
+            unique_id=link.split('-')[-1]
+            unique_ids.append(unique_id)
+            uuid=uuid4().hex
+            uuids.append(uuid)
+            self.driver.get(link)
+            name=self.driver.find_element(By.XPATH,
+                        value='//header[@class="bop-title"]/h1').text
+            names.append(name)
+
+
+            price=self.driver.find_element(By.XPATH,
+                            value='//*[@id="overview"]/section[2]/div[1]/div/h2').text
+            prices.append(price)
+
+
+            # exp=self.driver.find_element(By.XPATH,
+            #                 value='//*[@id="bopShelfLife"]/span').text
+            # exps.append(exp)
+
+
+            # description=self.driver.find_element(By.XPATH,
+            #                 value='//*[@id="productInformation"]/div[2]/div[1]/div[2]/div/div[1]/div').text
+            # descriptions.append(description)
+
+
+
+
+            # exps_descirption=self.driver.find_element(By.XPATH,
+            #                 value='//*[@id="bopShelfLife"]/p').text
+            # exps_descirptions.append(exps_descirption)
+
+
+            rating_score=self.driver.find_element(By.XPATH,
+                             value='//*[@id="reviews"]/div[1]/div[1]/span').text
+            rating_scores.append(rating_score)
+
+            five_stars_rating=self.driver.find_element(By.XPATH,
+                                value='//*[@id="reviews"]/div[1]/div[2]/div[1]/span').text
+            five_stars_ratings.append(five_stars_rating)
+
+            four_stars_rating=self.driver.find_element(By.XPATH,
+                                value='//*[@id="reviews"]/div[1]/div[2]/div[2]/span').text
+            four_stars_ratings.append(four_stars_rating)
+
+            three_stars_rating=self.driver.find_element(By.XPATH,
+                                value='//*[@id="reviews"]/div[1]/div[2]/div[3]/span').text
+            three_stars_ratings.append(three_stars_rating)
+
+            two_stars_rating=self.driver.find_element(By.XPATH,
+                            value='//*[@id="reviews"]/div[1]/div[2]/div[4]/span').text
+            two_stars_ratings.append(two_stars_rating)
+
+            one_star_rating=self.driver.find_element(By.XPATH,
+                            value='//*[@id="reviews"]/div[1]/div[2]/div[5]/span').text
+            one_star_ratings.append(one_star_rating)
+
+            recommendation_rate=self.driver.find_element(By.XPATH,
+                            value='//*[@id="reviews"]/div[1]/div[4]/div[1]').text
+            recommendation_rates.append(recommendation_rate)
         
-  
+        data_dict = {"unique_id":unique_ids,
+                    "uuid":uuids,
+                    "price":prices,
+                    "product_name":names,
+                    "rating_score":rating_scores,
+                    "five_stars_rating":five_stars_ratings,
+                    "four_stars_rating":four_stars_ratings,
+                    "three_stars_rating":three_stars_ratings,
+                    "two_stars_rating":two_stars_ratings,
+                    "one_star_rating":one_star_rating,
+                    "recommendation_rate":recommendation_rates
+                    }
+        
+        return data_dict
+
+
+            # "unique_id":unique_ids,
+            # "uuid":uuids,
+            # "product_name":names,
+            # "country_of_orgin":countries_of_orgin,
+            # "description":descriptions,
+            # "rating_score":rating_scores,
+            # "five_stars_rating":five_stars_ratings,
+            # "four_stars_rating":four_stars_ratings,
+            # "three_stars_rating":three_stars_ratings,
+            # "two_stars_rating":two_stars_ratings,
+            # "one_star_rating":one_star_rating,
+            # "recommendation_rate":recommendation_rates
+                
+        
 
 
 
@@ -121,7 +241,7 @@ class Scraper:
 
 
 
-
+ 
 
     # def get_links(self):
     #     self.accept_cookies()
