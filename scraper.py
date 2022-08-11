@@ -10,6 +10,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 import uuid
 from uuid import uuid4
+import os
+import json
 class Scraper:
 
 
@@ -120,6 +122,10 @@ class Scraper:
 
 
     def get_info(self):
+        directory = "raw_data"
+        parent_dir = "C:/Users/44772/Documents/GitHub\Data-Collection-Pipeline"
+        path = os.path.join(parent_dir, directory)
+        os.mkdir(path)
         links=self.find_links()
         unique_ids=[]
         uuids=[]
@@ -136,9 +142,10 @@ class Scraper:
         two_stars_ratings=[]
         one_star_ratings=[]
         recommendation_rates=[]
-        for link in links:
-            if link=='https://www.ocado.com/products/m-s-smokin-southern-fried-chicken-tenders-587598011'or link=='https://www.ocado.com/products/m-s-crackin-classic-chicken-tenders-587592011' or link=='https://www.ocado.com/products/gilberts-chicken-hot-dog-575079011':
-                continue
+        new_links=links[0:5]
+        for link in new_links:
+            # if link=='https://www.ocado.com/products/m-s-smokin-southern-fried-chicken-tenders-587598011'or link=='https://www.ocado.com/products/m-s-crackin-classic-chicken-tenders-587592011' or link=='https://www.ocado.com/products/gilberts-chicken-hot-dog-575079011':
+            #     continue
             unique_id=link.split('-')[-1]
             unique_ids.append(unique_id)
             uuid=uuid4().hex
@@ -173,7 +180,12 @@ class Scraper:
 
             rating_score=self.driver.find_element(By.XPATH,
                              value='//*[@id="reviews"]/div[1]/div[1]/span').text
-            rating_scores.append(rating_score)
+            if rating_score=='NoSuchElementException':
+                rating_score='N/A'
+                rating_scores.append(rating_score)
+            else:
+                rating_scores.append(rating_score)
+
 
             five_stars_rating=self.driver.find_element(By.XPATH,
                                 value='//*[@id="reviews"]/div[1]/div[2]/div[1]/span').text
@@ -204,15 +216,20 @@ class Scraper:
                     "price":prices,
                     "product_name":names,
                     "rating_score":rating_scores,
+                    "recommendation_rate":recommendation_rates,
                     "five_stars_rating":five_stars_ratings,
                     "four_stars_rating":four_stars_ratings,
                     "three_stars_rating":three_stars_ratings,
                     "two_stars_rating":two_stars_ratings,
                     "one_star_rating":one_star_rating,
-                    "recommendation_rate":recommendation_rates
                     }
-        
         return data_dict
+        # b=json.dumps(data_dict)
+        # f = open("C:/Users/44772/Documents/GitHub\Data-Collection-Pipeline/data_folder/dict.json","w")
+        # f.write(b)
+        # f.close()
+
+
 
 
             # "unique_id":unique_ids,
@@ -231,7 +248,11 @@ class Scraper:
         
 
 
-
+                    # "five_stars_rating":five_stars_ratings,
+                    # "four_stars_rating":four_stars_ratings,
+                    # "three_stars_rating":three_stars_ratings,
+                    # "two_stars_rating":two_stars_ratings,
+                    # "one_star_rating":one_star_rating,
 
 
 
@@ -315,7 +336,6 @@ class Scraper:
         # for food_product in food_products:
         #     link=food_product.find_element(By.XPATH,value='//a').get_attribute('href')
         #     links.append(link)
-        return food_products#
     
     
 
