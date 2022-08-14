@@ -12,6 +12,8 @@ import uuid
 from uuid import uuid4
 import os
 import json
+import urllib
+import urllib.request
 class Scraper:
 
 
@@ -123,242 +125,75 @@ class Scraper:
 
     def get_info(self):
         directory = "raw_data"
-        parent_dir = "C:/Users/44772/Documents/GitHub\Data-Collection-Pipeline"
+        parent_dir = "C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline"
         path = os.path.join(parent_dir, directory)
         os.mkdir(path)
         links=self.find_links()
-        unique_ids=[]
-        uuids=[]
-        names=[]
-        prices=[]
-        # exps=[]
-        # exps_descirptions=[]
-        # descriptions=[]
-        # countries_of_orgin=[]
-        rating_scores=[]
-        five_stars_ratings=[]
-        four_stars_ratings=[]
-        three_stars_ratings=[]
-        two_stars_ratings=[]
-        one_star_ratings=[]
-        recommendation_rates=[]
-        new_links=links[0:5]
-        for link in new_links:
+
+        for link in links:
             # if link=='https://www.ocado.com/products/m-s-smokin-southern-fried-chicken-tenders-587598011'or link=='https://www.ocado.com/products/m-s-crackin-classic-chicken-tenders-587592011' or link=='https://www.ocado.com/products/gilberts-chicken-hot-dog-575079011':
             #     continue
+            data_container={}
             unique_id=link.split('-')[-1]
-            unique_ids.append(unique_id)
             uuid=uuid4().hex
-            uuids.append(uuid)
             self.driver.get(link)
             name=self.driver.find_element(By.XPATH,
                         value='//header[@class="bop-title"]/h1').text
-            names.append(name)
 
 
             price=self.driver.find_element(By.XPATH,
                             value='//*[@id="overview"]/section[2]/div[1]/div/h2').text
-            prices.append(price)
 
-
-            # exp=self.driver.find_element(By.XPATH,
-            #                 value='//*[@id="bopShelfLife"]/span').text
-            # exps.append(exp)
-
-
-            # description=self.driver.find_element(By.XPATH,
-            #                 value='//*[@id="productInformation"]/div[2]/div[1]/div[2]/div/div[1]/div').text
-            # descriptions.append(description)
-
-
-
-
-            # exps_descirption=self.driver.find_element(By.XPATH,
-            #                 value='//*[@id="bopShelfLife"]/p').text
-            # exps_descirptions.append(exps_descirption)
 
 
             rating_score=self.driver.find_element(By.XPATH,
                              value='//*[@id="reviews"]/div[1]/div[1]/span').text
-            if rating_score=='NoSuchElementException':
-                rating_score='N/A'
-                rating_scores.append(rating_score)
-            else:
-                rating_scores.append(rating_score)
 
 
             five_stars_rating=self.driver.find_element(By.XPATH,
                                 value='//*[@id="reviews"]/div[1]/div[2]/div[1]/span').text
-            five_stars_ratings.append(five_stars_rating)
 
             four_stars_rating=self.driver.find_element(By.XPATH,
                                 value='//*[@id="reviews"]/div[1]/div[2]/div[2]/span').text
-            four_stars_ratings.append(four_stars_rating)
+
 
             three_stars_rating=self.driver.find_element(By.XPATH,
                                 value='//*[@id="reviews"]/div[1]/div[2]/div[3]/span').text
-            three_stars_ratings.append(three_stars_rating)
 
             two_stars_rating=self.driver.find_element(By.XPATH,
                             value='//*[@id="reviews"]/div[1]/div[2]/div[4]/span').text
-            two_stars_ratings.append(two_stars_rating)
+
 
             one_star_rating=self.driver.find_element(By.XPATH,
                             value='//*[@id="reviews"]/div[1]/div[2]/div[5]/span').text
-            one_star_ratings.append(one_star_rating)
 
             recommendation_rate=self.driver.find_element(By.XPATH,
                             value='//*[@id="reviews"]/div[1]/div[4]/div[1]').text
-            recommendation_rates.append(recommendation_rate)
+            img = self.driver.find_element(By.XPATH,value='//*[@id="overview"]/section[1]/div/div/div[1]/img')
+            img_link=img.get_attribute('src')
         
-        data_dict = {"unique_id":unique_ids,
-                    "uuid":uuids,
-                    "price":prices,
-                    "product_name":names,
-                    "rating_score":rating_scores,
-                    "recommendation_rate":recommendation_rates,
-                    "five_stars_rating":five_stars_ratings,
-                    "four_stars_rating":four_stars_ratings,
-                    "three_stars_rating":three_stars_ratings,
-                    "two_stars_rating":two_stars_ratings,
+            data_container = {
+                    "uuid":uuid,
+                    "price":price,
+                    "product_name":name,
+                    "rating_score":rating_score,
+                    "recommendation_rate":recommendation_rate,
+                    "five_stars_rating":five_stars_rating,
+                    "four_stars_rating":four_stars_rating,
+                    "three_stars_rating":three_stars_rating,
+                    "two_stars_rating":two_stars_rating,
                     "one_star_rating":one_star_rating,
                     }
-        return data_dict
-        # b=json.dumps(data_dict)
-        # f = open("C:/Users/44772/Documents/GitHub\Data-Collection-Pipeline/data_folder/dict.json","w")
-        # f.write(b)
-        # f.close()
+            file_name = f"{unique_id}/data.json"
+            os.makedirs(os.path.dirname(f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{file_name}"),exist_ok=True)
+            with open(f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{file_name}", mode="w",encoding='utf-8') as file:
+                file.write(str(data_container))
+                file.close()
+            os.mkdir(f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{unique_id}/image/")
+            urllib.request.urlretrieve(img_link, f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{unique_id}/image/{unique_id}.jpg")
 
 
 
-
-            # "unique_id":unique_ids,
-            # "uuid":uuids,
-            # "product_name":names,
-            # "country_of_orgin":countries_of_orgin,
-            # "description":descriptions,
-            # "rating_score":rating_scores,
-            # "five_stars_rating":five_stars_ratings,
-            # "four_stars_rating":four_stars_ratings,
-            # "three_stars_rating":three_stars_ratings,
-            # "two_stars_rating":two_stars_ratings,
-            # "one_star_rating":one_star_rating,
-            # "recommendation_rate":recommendation_rates
-                
-        
-
-
-                    # "five_stars_rating":five_stars_ratings,
-                    # "four_stars_rating":four_stars_ratings,
-                    # "three_stars_rating":three_stars_ratings,
-                    # "two_stars_rating":two_stars_ratings,
-                    # "one_star_rating":one_star_rating,
-
-
-
-
-
-
-
-
-
- 
-
-    # def get_links(self):
-    #     self.accept_cookies()
-    #     self.driver.implicitly_wait(1)
-    #     self.browse_button()
-    #     self.driver.implicitly_wait(1)
-    #     self.search_bar()
-    #     self.driver.implicitly_wait(1)
-    #     food_products=self.find_product()
-    #     for food_product in food_products:
-    #         self.driver.implicitly_wait(1)
-    #         food_product.click()
-    #         self.driver.implicitly_wait(1)
-
-    #         self.driver.back()
-
-
-
-
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-                    # each_uuid=str(uuid.uuid4())
-            # uuid.append(each_uuid)
-            # tag_data_sku=food_product.find_elements(By.XPATH,value='./div')
-            # data_sku=tag_data_sku[1].get_attribute('data-sku')
-            # unique_id.append(data_sku)
-            # unique_id.append(food_product.find_elements(By.XPATH,value='./div'
-        # #            # name_section=self.driver.find_element(By.XPATH,value='//section[@class="bop-section bop-intro"]')
-            # name_tag=name_section.find_element(By.XPATH,value='//header[@class="bop-title"]')
-            # names=name_tag.find_element(By.XPATH,value='//h1')
-            # product_names.append(names) 
-        #     tag_product_weight=self.driver.find_element(by=By.CLASS_NAME ,value="bop-title")
-        #     weight=tag_product_weight.find_element(by=By.XPATH,value='.//span[@class="bop-catchWeight"]').text
-        #     product_weight.append(weight)
-        #     price=self.driver.find_element(by=By.XPATH,value='//h2[@class="bop-price__current " ]').text
-        #     product_price.append(price)
-        #     price_per=self.driver.find_element(by=By.XPATH,value='//span[@class="bop-price__per"]').text
-        #     product_price_per.append(price_per)
-        #     description=self.driver.find_element(by=By.XPATH,value='//div[@class="bop-info__content"]').text
-        #     product_description.append(description)
-        # dict={"unique_id":unique_id,
-        #         "product_name":product_name,
-        #         "product_weight":product_weight,
-        #         "product_price":product_price,
-        #         "product_price_per":product_price_per,
-        #         "product_description":product_description}
-        
-
-
-
-            
-
-
-        
-        # food_products[0].click()
-        # links=[]
-        # for food_product in food_products:
-        #     link=food_product.find_element(By.XPATH,value='//a').get_attribute('href')
-        #     links.append(link)
-    
-    
-
-
-# class PaddleScraper (Scraper):
-
-    # def find_all_products(self):
-    #     self.accept_cookies()
-    #     time.sleep(1)
-    #     self.browse_button()
-    #     time.sleep(1)
-    #     self.search_bar()
-    #     time.sleep(1)
-    #     food_products=self.find_product()
-    #     # links=[]
-    #     # a=food_products[0].find_element(By.XPATH,value='//a').get_attribute('href')
-    #     # links.append(a)
-    #     return food_products
-    #     # for product in food_products:
-    #     #     link=product.find_element(By.XPATH,value='//a').get_attribute('href')
-    #     #     links.append(link)
-    #     # return links
-        
 
 
 
