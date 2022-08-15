@@ -14,6 +14,7 @@ import os
 import json
 import urllib
 import urllib.request
+import boto3
 class Scraper:
 
 
@@ -191,6 +192,11 @@ class Scraper:
                 file.close()
             os.mkdir(f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{unique_id}/image/")
             urllib.request.urlretrieve(img_link, f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{unique_id}/image/{unique_id}.jpg")
+            s3=boto3.client('s3')
+            s3.upload_file(f'C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{file_name}','scraperaicore',f'{unique_id}.json')
+            s3.upload_file(f'C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{unique_id}/image/{unique_id}.jpg','scraperaicore',f'{unique_id}.jpg')
+
+
 
 
 
