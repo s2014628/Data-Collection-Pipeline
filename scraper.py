@@ -15,6 +15,9 @@ import json
 import urllib
 import urllib.request
 import boto3
+import pandas as pd
+from sqlalchemy import create_engine
+from sqlalchemy import inspect
 class Scraper:
 
 
@@ -135,7 +138,6 @@ class Scraper:
             # if link=='https://www.ocado.com/products/m-s-smokin-southern-fried-chicken-tenders-587598011'or link=='https://www.ocado.com/products/m-s-crackin-classic-chicken-tenders-587592011' or link=='https://www.ocado.com/products/gilberts-chicken-hot-dog-575079011':
             #     continue
             data_container={}
-            unique_id=link.split('-')[-1]
             uuid=uuid4().hex
             self.driver.get(link)
             name=self.driver.find_element(By.XPATH,
@@ -172,9 +174,9 @@ class Scraper:
                             value='//*[@id="reviews"]/div[1]/div[4]/div[1]').text
             img = self.driver.find_element(By.XPATH,value='//*[@id="overview"]/section[1]/div/div/div[1]/img')
             img_link=img.get_attribute('src')
+
         
             data_container = {
-                    "uuid":uuid,
                     "price":price,
                     "product_name":name,
                     "rating_score":rating_score,
@@ -185,17 +187,76 @@ class Scraper:
                     "two_stars_rating":two_stars_rating,
                     "one_star_rating":one_star_rating,
                     }
-            file_name = f"{unique_id}/data.json"
+            data_table=pd.DataFrame(data_container,index=[0])
+            engine=create_engine('postgresql+psycopg2://postgres:Feja0331@scraper.c0w7tms6lrlr.eu-west-2.rds.amazonaws.com:5432/scraper')
+            inspect(engine).get_table_names()
+            data_table.to_sql(f"{uuid}",engine,if_exists='append')
+            file_name = f"{uuid}/data.json"
             os.makedirs(os.path.dirname(f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{file_name}"),exist_ok=True)
             with open(f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{file_name}", mode="w",encoding='utf-8') as file:
                 file.write(str(data_container))
                 file.close()
-            os.mkdir(f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{unique_id}/image/")
-            urllib.request.urlretrieve(img_link, f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{unique_id}/image/{unique_id}.jpg")
+            os.mkdir(f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{uuid}/image/")
+            urllib.request.urlretrieve(img_link, f"C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{uuid}/image/{uuid}.jpg")
             s3=boto3.client('s3')
-            s3.upload_file(f'C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{file_name}','scraperaicore',f'{unique_id}.json')
-            s3.upload_file(f'C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{unique_id}/image/{unique_id}.jpg','scraperaicore',f'{unique_id}.jpg')
+            s3.upload_file(f'C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{file_name}','scraperaicore',f'{uuid}.json')
+            s3.upload_file(f'C:/Users/44772/Documents/GitHub/Data-Collection-Pipeline/raw_data/{uuid}/image/{uuid}.jpg','scraperaicore',f'{uuid}.jpg')
+    def upload_table(self):
+        links=self.find_links()
 
+        for link in links:
+            # if link=='https://www.ocado.com/products/m-s-smokin-southern-fried-chicken-tenders-587598011'or link=='https://www.ocado.com/products/m-s-crackin-classic-chicken-tenders-587592011' or link=='https://www.ocado.com/products/gilberts-chicken-hot-dog-575079011':
+            #     continue
+            data_container={}
+            uuid=uuid4().hex
+            self.driver.get(link)
+            name=self.driver.find_element(By.XPATH,
+                        value='//header[@class="bop-title"]/h1').text
+
+
+            price=self.driver.find_element(By.XPATH,
+                            value='//*[@id="overview"]/section[2]/div[1]/div/h2').text
+
+
+
+            rating_score=self.driver.find_element(By.XPATH,
+                             value='//*[@id="reviews"]/div[1]/div[1]/span').text
+
+
+            five_stars_rating=self.driver.find_element(By.XPATH,
+                                value='//*[@id="reviews"]/div[1]/div[2]/div[1]/span').text
+
+            four_stars_rating=self.driver.find_element(By.XPATH,
+                                value='//*[@id="reviews"]/div[1]/div[2]/div[2]/span').text
+
+
+            three_stars_rating=self.driver.find_element(By.XPATH,
+                                value='//*[@id="reviews"]/div[1]/div[2]/div[3]/span').text
+
+            two_stars_rating=self.driver.find_element(By.XPATH,
+                            value='//*[@id="reviews"]/div[1]/div[2]/div[4]/span').text
+
+
+            one_star_rating=self.driver.find_element(By.XPATH,
+                            value='//*[@id="reviews"]/div[1]/div[2]/div[5]/span').text
+
+            recommendation_rate=self.driver.find_element(By.XPATH,
+                            value='//*[@id="reviews"]/div[1]/div[4]/div[1]').text        
+            data_container = {
+                    "price":price,
+                    "product_name":name,
+                    "rating_score":rating_score,
+                    "recommendation_rate":recommendation_rate,
+                    "five_stars_rating":five_stars_rating,
+                    "four_stars_rating":four_stars_rating,
+                    "three_stars_rating":three_stars_rating,
+                    "two_stars_rating":two_stars_rating,
+                    "one_star_rating":one_star_rating,
+                    }
+            data_table=pd.DataFrame(data_container,index=[0])
+            engine=create_engine('postgresql+psycopg2://postgres:Feja0331@scraper.c0w7tms6lrlr.eu-west-2.rds.amazonaws.com:5432/scraper')
+            inspect(engine).get_table_names()
+            data_table.to_sql(f"{uuid}",engine,if_exists='append')
 
 
 
